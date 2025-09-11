@@ -1,4 +1,4 @@
-# Rubik’s Cube Algorithm Solver (Thesis Project)
+# Rubik’s Cube Algorithmic Solver (Thesis Project)
 
 This repository contains the implementation for my BSc (Hons) Software Development dissertation:  
 **“Rubik’s Cube Algorithmic Solver” – Neil Azzopardi (September 2025)**
