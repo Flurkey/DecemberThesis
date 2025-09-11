@@ -1,0 +1,27 @@
+# Python virtual environments
+rubik-env/
+.venv/
+venv/
+ENV/
+
+# Python cache and build artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+*.egg
+build/
+dist/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS-specific junk
+.DS_Store
+Thumbs.db
+
+# IDE/editor settings (optional)
+#.vscode/
+#.idea/
