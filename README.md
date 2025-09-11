@@ -9,8 +9,6 @@ The project integrates:
 - **User interaction** through a step-by-step UI,
 - **Hand gesture recognition** for validating cube moves.
 
----
-
 ## Repository Structure
 
 This repository has two main branches, each representing a core part of the system:
