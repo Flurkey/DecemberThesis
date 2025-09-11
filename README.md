@@ -9,8 +9,6 @@ The project integrates:
 - **User interaction** through a step-by-step UI,
 - **Hand gesture recognition** for validating cube moves.
 
-> Full details, methodology, and evaluation are documented in my [thesis](./Thesis_Sep_2025.pdf).
-
 ---
 
 ## Repository Structure
