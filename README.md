@@ -36,5 +36,5 @@ This repository has two main branches, each representing a core part of the syst
 
 ### 1. Clone the repo
 ```bash
-git clone https://github.com/Flurkey/SeptemberThesis.git
+git clone https://github.com/Flurkey/DecemberThesis.git
 cd SeptemberThesis
