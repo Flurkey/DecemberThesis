@@ -50,8 +50,8 @@ RED_RANGE_2 = (np.array([170, 100, 100]), np.array([180, 255, 255]))
 
 # Default DroidCam URL (can be configured via the UI)
 # Used in camera.py for camera initialization
-DEFAULT_DROIDCAM_URL = "http://192.168.0.167:4747/video"
-DEFAULT_DROIDCAM_SNAPSHOT_URL = "http://192.168.0.167:4747/cam/1/frame.jpg"
+DEFAULT_DROIDCAM_URL = "http://192.168.0.102:4747/video"
+DEFAULT_DROIDCAM_SNAPSHOT_URL = "http://192.168.0.102:4747/cam/1/frame.jpg"
 
 # Color to string mapping for display
 # Used in app.py for UI display

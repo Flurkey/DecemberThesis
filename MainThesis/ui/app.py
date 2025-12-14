@@ -142,8 +142,20 @@ class RubiksCubeApp(tk.Tk):
         self.steps_frame = ttk.LabelFrame(self.control_frame, text="Solution Steps")
         self.steps_frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
         
-        self.steps_text = tk.Text(self.steps_frame, height=10, width=40)
-        self.steps_text.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+        # Create a horizontal layout for steps and move guide
+        steps_container = ttk.Frame(self.steps_frame)
+        steps_container.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+        
+        self.steps_text = tk.Text(steps_container, height=10, width=35)
+        self.steps_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0, 5))
+        
+        # Visual move guide panel
+        self.move_guide_frame = ttk.LabelFrame(steps_container, text="Move Guide")
+        self.move_guide_frame.pack(side=tk.RIGHT, fill=tk.BOTH, padx=(5, 0))
+        
+        self.move_guide_text = tk.Text(self.move_guide_frame, height=10, width=25, 
+                                       wrap=tk.WORD, state=tk.DISABLED, font=("Arial", 10))
+        self.move_guide_text.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
         
     def _create_cube_display(self):
         """Create the cube state display grids"""
@@ -421,7 +433,7 @@ class RubiksCubeApp(tk.Tk):
             self.next_button.configure(state=tk.NORMAL)
             self.solution_step = 0
             
-            # Highlight the current move
+            # Highlight the current move and update guide
             self._highlight_current_move_in_section(current_section, current_move)
             
             # Show success message
@@ -469,6 +481,10 @@ class RubiksCubeApp(tk.Tk):
             self.next_button.configure(state=tk.NORMAL)
             self.solution_step = 0
             self._update_display()
+            
+            # Update move guide with first move
+            if moves:
+                self._update_move_guide(moves[0])
             
             # Show confirmation
             messagebox.showinfo("Manual Solution", f"Loaded {len(moves)} solution steps successfully. Use the Previous/Next Step buttons to navigate.")
@@ -564,6 +580,8 @@ class RubiksCubeApp(tk.Tk):
                         self.steps_text.insert(tk.END, "SOLUTION COMPLETE!\n")
                         self.steps_text.insert(tk.END, f"All {len(self.solver.solution_moves)} steps have been executed.\n")
                         self.steps_text.insert(tk.END, "The cube should now be solved!")
+                        # Update move guide to show completion
+                        self._update_move_guide("")
             
             else:
                 # Working solver
@@ -578,6 +596,11 @@ class RubiksCubeApp(tk.Tk):
                     self.steps_text.tag_add("current", f"{self.solution_step + 1}.0",
                                           f"{self.solution_step + 1}.end")
                     self.steps_text.tag_config("current", background="yellow")
+                    
+                    # Update move guide
+                    if self.solution_step < len(self.solver.solution_steps):
+                        current_move = self.solver.solution_steps[self.solution_step]
+                        self._update_move_guide(current_move)
 
     def _get_current_section_and_move(self, step):
         """Determine which solving section and move the current step belongs to"""
@@ -598,9 +621,94 @@ class RubiksCubeApp(tk.Tk):
         
         return "Complete", "Unknown"
 
+    def _get_move_visual_description(self, move: str) -> str:
+        """Get a visual description of what a move does"""
+        if not move or not move.strip():
+            return "No move selected"
+        
+        move = move.strip()
+        
+        # Handle cube rotations
+        if move.startswith('m'):
+            if move == 'mR':
+                return "🔄 Rotate Cube Right\n\nRotate the entire cube\nclockwise (right) when\nviewed from above.\n\n↻ (Right)"
+            elif move == 'mL':
+                return "🔄 Rotate Cube Left\n\nRotate the entire cube\ncounter-clockwise (left)\nwhen viewed from above.\n\n↺ (Left)"
+            elif move == 'mR2' or move == 'mL2':
+                return "🔄 Rotate Cube 180°\n\nRotate the entire cube\n180 degrees around the\nvertical axis."
+            else:
+                return f"🔄 Cube Rotation\n\n{move}"
+        
+        # Handle middle layer moves
+        if move[0] == 'M':
+            if move == 'M':
+                return "⬅️ Middle Layer Right\n\nMove the middle layer\nbetween L and R faces\nclockwise (toward R).\n\nM = Middle"
+            elif move == "M'":
+                return "➡️ Middle Layer Left\n\nMove the middle layer\nbetween L and R faces\ncounter-clockwise\n(toward L).\n\nM' = Middle'"
+            elif move == 'M2':
+                return "⬅️➡️ Middle Layer 180°\n\nMove the middle layer\n180 degrees.\n\nM2 = Middle2"
+        elif move[0] == 'E':
+            if move == 'E':
+                return "⬇️ Equator Layer\n\nMove the middle layer\nbetween U and D faces.\n\nE = Equator"
+            elif move == "E'":
+                return "⬆️ Equator Layer'\n\nMove the middle layer\nbetween U and D faces\n(reverse).\n\nE' = Equator'"
+            elif move == 'E2':
+                return "⬇️⬆️ Equator 180°\n\nMove the middle layer\n180 degrees.\n\nE2 = Equator2"
+        elif move[0] == 'S':
+            if move == 'S':
+                return "↔️ Standing Layer\n\nMove the middle layer\nbetween F and B faces.\n\nS = Standing"
+            elif move == "S'":
+                return "↔️ Standing Layer'\n\nMove the middle layer\nbetween F and B faces\n(reverse).\n\nS' = Standing'"
+            elif move == 'S2':
+                return "↔️ Standing 180°\n\nMove the middle layer\n180 degrees.\n\nS2 = Standing2"
+        
+        # Handle standard face moves
+        face_name = move[0]
+        modifier = move[1] if len(move) > 1 else ''
+        
+        face_descriptions = {
+            'R': ('Right Face', '→', 'The right face of the cube'),
+            'L': ('Left Face', '←', 'The left face of the cube'),
+            'U': ('Up Face', '↑', 'The top face of the cube'),
+            'D': ('Down Face', '↓', 'The bottom face of the cube'),
+            'F': ('Front Face', '⬇️', 'The front face of the cube'),
+            'B': ('Back Face', '⬆️', 'The back face of the cube')
+        }
+        
+        if face_name not in face_descriptions:
+            return f"Unknown move: {move}"
+        
+        name, arrow, description = face_descriptions[face_name]
+        
+        if modifier == "'" or modifier == '`':
+            direction = "Counter-Clockwise ↺"
+            visual = f"{arrow} {face_name}'"
+            instruction = f"Turn {name.lower()}\ncounter-clockwise\n(when facing it)."
+        elif modifier == '2':
+            direction = "180° Turn"
+            visual = f"{arrow} {face_name}2"
+            instruction = f"Turn {name.lower()}\n180 degrees\n(twice)."
+        else:
+            direction = "Clockwise ↻"
+            visual = f"{arrow} {face_name}"
+            instruction = f"Turn {name.lower()}\nclockwise\n(when facing it)."
+        
+        return f"{visual}\n\n{direction}\n\n{instruction}\n\n{description}"
+    
+    def _update_move_guide(self, move: str):
+        """Update the move guide panel with the current move description"""
+        self.move_guide_text.config(state=tk.NORMAL)
+        self.move_guide_text.delete(1.0, tk.END)
+        description = self._get_move_visual_description(move)
+        self.move_guide_text.insert(1.0, description)
+        self.move_guide_text.config(state=tk.DISABLED)
+    
     def _highlight_current_move_in_section(self, section_name, current_move):
         """Highlight the current move within its section"""
         self.steps_text.tag_remove("current", "1.0", tk.END)
+        
+        # Update the move guide
+        self._update_move_guide(current_move)
         
         # Find the line with the current section (look for the arrow indicator)
         for line_num in range(1, int(self.steps_text.index(tk.END).split('.')[0])):
