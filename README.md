@@ -35,5 +35,6 @@ This repository has two main branches, each representing a core part of the syst
 ## How to Run
 
 ### 1. Clone the repo
+```bash
 git clone https://github.com/Flurkey/DecemberThesis.git
 cd DecemberThesis
