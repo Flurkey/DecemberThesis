@@ -1,7 +1,14 @@
+<<<<<<< HEAD
 # Rubik’s Cube Algorithm Solver (Thesis Project)
 
 This repository contains the implementation for my BSc (Hons) Software Development dissertation:  
 **“Rubik’s Cube Algorithm Solver” – Neil Azzopardi (December 2025)**
+=======
+# Rubik’s Cube Algorithmic Solver (Thesis Project)
+
+This repository contains the implementation for my BSc (Hons) Software Development dissertation:  
+**“Rubik’s Cube Algorithmic Solver” – Neil Azzopardi (September 2025)**
+>>>>>>> 125dd9adfa5ff206d362ebe96eab39c4a6d044b0
 
 The project integrates:
 - **Image processing** for cube state detection,
@@ -36,5 +43,10 @@ This repository has two main branches, each representing a core part of the syst
 
 ### 1. Clone the repo
 ```bash
+<<<<<<< HEAD
 git clone https://github.com/Flurkey/DecemberThesis.git
 cd DecemberThesis
+=======
+git clone https://github.com/Flurkey/SeptemberThesis.git
+cd SeptemberThesis
+>>>>>>> 125dd9adfa5ff206d362ebe96eab39c4a6d044b0
